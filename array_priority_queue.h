@@ -12,7 +12,7 @@ private:
     int size_;
     int capacity;
     std::unordered_map<int, int> value_to_index;
-
+    //powieksza pojemnosc przez alokacje nowych wiekszych
     void resize() {
         int new_capacity = capacity * 2;
         int* new_values = new int[new_capacity];
@@ -42,7 +42,7 @@ public:
         delete[] values;
         delete[] priorities;
     }
-
+    //wstawia nowy na koniec i dodaje do mappki
     void insert(int value, int priority) {
         if (value_to_index.count(value))
             throw std::invalid_argument("Value already exists");
@@ -55,12 +55,12 @@ public:
         value_to_index[value] = size_;
         ++size_;
     }
-
+    //znajduje element o najwyzszym prio i zmienia go z osotatnim
     int remove() {
         if (size_ == 0)
             throw std::out_of_range("Queue is empty");
 
-        // Find max priority
+        
         int max_index = 0;
         for (int i = 1; i < size_; ++i) {
             if (priorities[i] > priorities[max_index]) {
@@ -70,14 +70,14 @@ public:
 
         int top_value = values[max_index];
 
-        // Replace with last element
+       
         swap_entries(max_index, size_ - 1);
         --size_;
         value_to_index.erase(top_value);
 
         return top_value;
     }
-
+    //przeszukuje zeby znalezc max prio
     int peek() const {
         if (size_ == 0)
             throw std::out_of_range("Queue is empty");
@@ -91,7 +91,7 @@ public:
 
         return values[max_index];
     }
-
+    //zmiana prio indeks pobiera z mapy
     void change_priority(int value, int new_priority) {
         auto it = value_to_index.find(value);
         if (it == value_to_index.end())
