@@ -19,7 +19,7 @@ struct Pair {
     int value;
     int priority;
 };
-
+//wczytuje pary wartosc priorytet z wejsciowego
 std::vector<Pair> load_input(const std::string& filename) {
     std::ifstream in(filename);
     std::vector<Pair> data;
@@ -29,6 +29,8 @@ std::vector<Pair> load_input(const std::string& filename) {
     }
     return data;
 }
+//mierzymy czasy samych operacji
+//po jednej size i peek, wybor 10 do zmiany priorytetu i usuwanie 10 elementow 
 
 template <typename Queue>
 void run_benchmark(const std::string& struct_name,
@@ -102,7 +104,7 @@ void run_benchmark(const std::string& struct_name,
 
     std::cout << "  Finished benchmarks for: " << struct_name << std::endl;
 }
-
+//tutaj iterujemy po wszystkich plikach tekstowych i uruchamiamy benchmarki ktore z kolei iteruja po rozmiarach
 int main() {
 
     std::vector<int> sizes = {1000, 10000, 50000, 100000, 200000, 300000, 400000, 500000};
