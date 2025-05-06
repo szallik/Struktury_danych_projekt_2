@@ -11,9 +11,9 @@ private:
     int* priorities;
     int size_;
     int capacity;
-    std::unordered_map<int, int> value_to_index;
+    std::unordered_map<int, int> value_to_index; //mapa wartosc indeks dla szybkiej zmiany priorytetu
 
-    void resize() {
+    void resize() { //powiekszamy gdy osiagniemy maksymalna pojemnosc
         int new_capacity = capacity * 2;
         int* new_values = new int[new_capacity];
         int* new_priorities = new int[new_capacity];
@@ -31,14 +31,14 @@ private:
         capacity = new_capacity;
     }
 
-    void swap(int i, int j) {
+    void swap(int i, int j) { //zmienia elementy kopca i odrazu aktualizuje mapke
         std::swap(values[i], values[j]);
         std::swap(priorities[i], priorities[j]);
         value_to_index[values[i]] = i;
         value_to_index[values[j]] = j;
     }
-
-    void heapify_up(int index) {
+    //ponizej heapify up i down ktore przesuwaja w gore i dol zeby przywrocic wlanosc kopca
+    void heapify_up(int index) { 
         while (index > 0) {
             int parent = (index - 1) / 2;
             if (priorities[index] > priorities[parent]) {
@@ -81,7 +81,7 @@ public:
         delete[] values;
         delete[] priorities;
     }
-
+    //wstawia nowy element i przywraca wlasnosc kopca w gore
     void insert(int value, int priority) {
         if (value_to_index.count(value))
             throw std::invalid_argument("Value already exists");
@@ -95,7 +95,7 @@ public:
         heapify_up(size_);
         ++size_;
     }
-
+    //usuwa korzen i reorganizuje strukture
     int remove() {
         if (size_ == 0)
             throw std::out_of_range("Queue is empty");
@@ -107,13 +107,13 @@ public:
         heapify_down(0);
         return top_value;
     }
-
+    //tu przeszykuje zeby znalezc element o najwyzszym priorytecie
     int peek() const {
         if (size_ == 0)
             throw std::out_of_range("Queue is empty");
         return values[0];
     }
-
+    //pobiera z mapki i zmienia priorytet wskazanego elementu 
     void change_priority(int value, int new_priority) {
         auto it = value_to_index.find(value);
         if (it == value_to_index.end())
