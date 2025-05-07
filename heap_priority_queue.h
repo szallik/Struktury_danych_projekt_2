@@ -11,9 +11,9 @@ private:
     int* priorities;
     int size_;
     int capacity;
-    std::unordered_map<int, int> value_to_index; //mapa wartosc indeks dla szybkiej zmiany priorytetu
+    std::unordered_map<int, int> value_to_index;
 
-    void resize() { //powiekszamy gdy osiagniemy maksymalna pojemnosc
+    void resize() {
         int new_capacity = capacity * 2;
         int* new_values = new int[new_capacity];
         int* new_priorities = new int[new_capacity];
@@ -31,14 +31,14 @@ private:
         capacity = new_capacity;
     }
 
-    void swap(int i, int j) { //zmienia elementy kopca i odrazu aktualizuje mapke
+    void swap(int i, int j) {
         std::swap(values[i], values[j]);
         std::swap(priorities[i], priorities[j]);
         value_to_index[values[i]] = i;
         value_to_index[values[j]] = j;
     }
-    //ponizej heapify up i down ktore przesuwaja w gore i dol zeby przywrocic wlanosc kopca
-    void heapify_up(int index) { 
+
+    void heapify_up(int index) {
         while (index > 0) {
             int parent = (index - 1) / 2;
             if (priorities[index] > priorities[parent]) {
@@ -71,6 +71,15 @@ private:
     }
 
 public:
+    HeapPriorityQueue(const HeapPriorityQueue& other)
+    : size_(other.size_), capacity(other.capacity), value_to_index(other.value_to_index) {
+        values = new int[capacity];
+        priorities = new int[capacity];
+        for (int i = 0; i < size_; ++i) {
+            values[i] = other.values[i];
+            priorities[i] = other.priorities[i];
+        }
+    }
     HeapPriorityQueue(int initial_capacity = 16)
         : size_(0), capacity(initial_capacity) {
         values = new int[capacity];
@@ -81,7 +90,7 @@ public:
         delete[] values;
         delete[] priorities;
     }
-    //wstawia nowy element i przywraca wlasnosc kopca w gore
+
     void insert(int value, int priority) {
         if (value_to_index.count(value))
             throw std::invalid_argument("Value already exists");
@@ -95,7 +104,7 @@ public:
         heapify_up(size_);
         ++size_;
     }
-    //usuwa korzen i reorganizuje strukture
+
     int remove() {
         if (size_ == 0)
             throw std::out_of_range("Queue is empty");
@@ -107,13 +116,13 @@ public:
         heapify_down(0);
         return top_value;
     }
-    //tu przeszykuje zeby znalezc element o najwyzszym priorytecie
+
     int peek() const {
         if (size_ == 0)
             throw std::out_of_range("Queue is empty");
         return values[0];
     }
-    //pobiera z mapki i zmienia priorytet wskazanego elementu 
+
     void change_priority(int value, int new_priority) {
         auto it = value_to_index.find(value);
         if (it == value_to_index.end())
